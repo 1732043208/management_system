@@ -27,3 +27,16 @@ npm run lint
 
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
+
+技术栈
+1.Vue全家桶(vue2.x,vue-cli,vue-router,vuex)
+
+2.axios
+
+3.Webpack
+
+4.Echarts
+
+5.Es5及以上
+
+6.Element-UI

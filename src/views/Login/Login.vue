@@ -65,15 +65,21 @@
                         console.log(res);
                         if (res.meta.status !== 200) {
                             console.log('登录失败!');
-                            this.$message.error('登录失败');
+                            this.$message({
+                                showClose: true,
+                                message: '登录失败!',
+                            });
                         } else {
                             console.log('登录成功!');
-                            this.$message.success('登陆成功',);
+                            this.$message({
+                                showClose: true,
+                                message: '登陆成功!',
+                                type: 'success'
+                            });
                             // token只应在当前网站打开期间生效，所以将token保存在sessionStorage中
-                            window.sessionStorage.setItem('token',res.data.token);
+                            window.sessionStorage.setItem('token', res.data.token);
                             this.$router.push('/Home')
                         }
-
                     }).catch(err => {
                         console.log(err);
                     })

@@ -16,22 +16,22 @@
                 <el-menu
                         background-color="#333744"
                         text-color="#fff"
-                        active-text-color="#ffd04b">
+                        active-text-color="#409EFF">
                     <!--                    一级菜单-->
                     <el-submenu :index="item.id.toString()" v-for="item in homeLeft" :key="item.id">
                         <!--                        一级菜单的模板区-->
                         <template slot="title">
                             <!--                            图标-->
-                            <i class="el-icon-location"></i>
+                            <i :class="IconsObj[item.id]"></i>
                             <!--                            文本-->
                             <span>{{item.authName}}</span>
                         </template>
 
                         <!--                        二级菜单-->
-                        <el-menu-item :index="items.id.toString()" v-for="items in item.children" :key="item.id">
+                        <el-menu-item :index="items.id.toString()" v-for="items in item.children" :key="items.id">
                             <template slot="title">
                                 <!--                            图标-->
-                                <i class="el-icon-location"></i>
+                                <i class="el-icon-menu"></i>
                                 <!--                            文本-->
                                 <span>{{items.authName}}</span>
                             </template>
@@ -53,9 +53,17 @@
     export default {
         name: 'Home',
         components: {},
-        data(){
+        data() {
             return {
-                homeLeft:[]
+                // 2.侧边栏数据
+                homeLeft: [],
+                IconsObj: {
+                    '125': 'iconfont icon-user',
+                    '103': 'iconfont icon-tijikongjian',
+                    '101': 'iconfont icon-shangpin',
+                    '102': 'iconfont icon-danju',
+                    '145': 'iconfont icon-baobiao'
+                }
             }
         },
         methods: {
@@ -70,7 +78,7 @@
             },
             getHomeLeftFunc() {
                 getHomeLeft().then(res => {
-                    this.homeLeft=res.data;
+                    this.homeLeft = res.data;
                     console.log(this.homeLeft);
                 }).catch(err => {
                     console.log(err);
@@ -112,5 +120,9 @@
 
     .home-container {
         height: 100%;
+    }
+
+    .iconfont {
+        margin-right: 10px;
     }
 </style>

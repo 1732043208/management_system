@@ -18,22 +18,22 @@
                         text-color="#fff"
                         active-text-color="#ffd04b">
                     <!--                    一级菜单-->
-                    <el-submenu index="1">
+                    <el-submenu :index="item.id.toString()" v-for="item in homeLeft" :key="item.id">
                         <!--                        一级菜单的模板区-->
                         <template slot="title">
                             <!--                            图标-->
                             <i class="el-icon-location"></i>
                             <!--                            文本-->
-                            <span>导航一</span>
+                            <span>{{item.authName}}</span>
                         </template>
 
                         <!--                        二级菜单-->
-                        <el-menu-item index="1-4-1">
+                        <el-menu-item :index="items.id.toString()" v-for="items in item.children" :key="item.id">
                             <template slot="title">
                                 <!--                            图标-->
                                 <i class="el-icon-location"></i>
                                 <!--                            文本-->
-                                <span>导航一</span>
+                                <span>{{items.authName}}</span>
                             </template>
                         </el-menu-item>
                     </el-submenu>
@@ -48,11 +48,16 @@
 </template>
 
 <script>
-
+    import {getHomeLeft} from "../../network/home";
 
     export default {
         name: 'Home',
         components: {},
+        data(){
+            return {
+                homeLeft:[]
+            }
+        },
         methods: {
             loginout() {
                 window.sessionStorage.clear();
@@ -62,7 +67,18 @@
                     message: '已退出登录！'
                 });
 
+            },
+            getHomeLeftFunc() {
+                getHomeLeft().then(res => {
+                    this.homeLeft=res.data;
+                    console.log(this.homeLeft);
+                }).catch(err => {
+                    console.log(err);
+                })
             }
+        },
+        created() {
+            this.getHomeLeftFunc()
         }
     }
 </script>

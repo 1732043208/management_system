@@ -13,8 +13,8 @@
         components: {},
         methods:{
             loginout(){
-                window.sessionStorage.clear()
-                this.$router.push('./login')
+                window.sessionStorage.clear();
+                this.$router.push('/Login');
                     this.$message({
                         showClose: true,
                         message: '已退出登录！'

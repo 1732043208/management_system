@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 
-const Home = () => import('../views/Home/Home')
+const Home = () => import('../views/Home/Home');
 
 const Login = () => import('../views/Login/Login.vue');
 
@@ -41,10 +41,10 @@ router.beforeEach((to, from, next) => {
     //next() 放行   next('/login') 强制跳转
     // 获取token
     const tokenStr = window.sessionStorage.getItem('token');
-    if (to.path === '/login') {
+    if (to.path === '/Login') {
         next()
     } else if (!tokenStr) {
-        next('/login')
+        next('/Login')
     } else {
         next()
     }

@@ -5,3 +5,14 @@ export function getHomeLeft() {
         url: "menus",
     })
 }
+
+export function getUsers(query, pagenum, pagesize) {
+    return request({
+        url: "users",
+        params: {
+            query,
+            pagenum,
+            pagesize
+        }
+    })
+}

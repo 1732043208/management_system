@@ -22,7 +22,7 @@ import {
     Switch,
     Tooltip,
     Pagination,
-    Dialog
+    Dialog,
 } from 'element-ui'
 
 Vue.use(Button);

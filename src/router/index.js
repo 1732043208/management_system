@@ -5,6 +5,7 @@ const Home = () => import('../views/Home/Home');
 
 const Login = () => import('../views/Login/Login.vue');
 const Welcome = () => import('../components/Welcome.vue');
+const Users = () => import('../views/Home/childCpns/user/users')
 Vue.use(VueRouter);
 
 const routes = [
@@ -17,11 +18,12 @@ const routes = [
         path: '/Home',
         name: 'Home',
         component: Home,
-        redirect:'/Welcome',
-        children: [{path: '/Welcome', component: Welcome}]
+        redirect: '/welcome',
+        children: [{path: '/welcome', component: Welcome},
+                   {path: '/users', component: Users}]
     },
     {
-        path: '/Login',
+        path: '/login',
         name: 'Login',
         component: Login
     },
@@ -42,10 +44,10 @@ router.beforeEach((to, from, next) => {
     //next() 放行   next('/login') 强制跳转
     // 获取token
     const tokenStr = window.sessionStorage.getItem('token');
-    if (to.path === '/Login') {
+    if (to.path === '/login') {
         next()
     } else if (!tokenStr) {
-        next('/Login')
+        next('/login')
     } else {
         next()
     }

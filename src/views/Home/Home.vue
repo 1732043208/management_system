@@ -13,13 +13,17 @@
             <!--                侧边栏-->
             <el-aside :width="isShowMenu?'64px':'200px'">
 
-                <button  class="toggle-button" @click="toggleCollapse">|||</button>
+                <button class="toggle-button" @click="toggleCollapse">|||</button>
                 <!--                侧边栏菜单区-->
                 <el-menu
                         background-color="#333744"
                         text-color="#fff"
                         active-text-color="#409EFF"
-                        unique-opened :collapse="isShowMenu" :collapse-transition="false">
+                        unique-opened
+                        :collapse="isShowMenu"
+                        :collapse-transition="false"
+                        router
+                        :default-active="activePath">
                     <!--                    一级菜单-->
                     <el-submenu :index="item.id.toString()" v-for="item in homeLeft" :key="item.id">
                         <!--                        一级菜单的模板区-->
@@ -31,7 +35,10 @@
                         </template>
 
                         <!--                        二级菜单-->
-                        <el-menu-item :index="items.id.toString()" v-for="items in item.children" :key="items.id">
+                        <el-menu-item :index="'/'+items.path"
+                                      v-for="items in item.children"
+                                      :key="items.id"
+                                      @click="saveNavState('/'+items.path)">
                             <template slot="title">
                                 <!--                            图标-->
                                 <i class="el-icon-menu"></i>
@@ -69,13 +76,14 @@
                     '102': 'iconfont icon-danju',
                     '145': 'iconfont icon-baobiao'
                 },
+                activePath: '',
                 isShowMenu: false
             }
         },
         methods: {
             loginout() {
                 window.sessionStorage.clear();
-                this.$router.push('/Login');
+                this.$router.push('/login');
                 this.$message({
                     showClose: true,
                     message: '已退出登录！'
@@ -93,10 +101,15 @@
             //点击按钮切换菜单的折叠与展开
             toggleCollapse() {
                 this.isShowMenu = !this.isShowMenu
+            },
+            saveNavState(val) {
+                window.sessionStorage.setItem('activePath', val);
+                this.activePath = val
             }
         },
         created() {
-            this.getHomeLeftFunc()
+            this.getHomeLeftFunc();
+            this.activePath = window.sessionStorage.getItem('activePath')
         }
     }
 </script>

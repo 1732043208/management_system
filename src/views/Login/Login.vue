@@ -62,7 +62,7 @@
                     if (!val) return;
                     //发起网络请求
                     getlogin(this.loginForm.username, this.loginForm.password).then(res => {
-                        console.log(res);
+                        // console.log(res);
                         if (res.meta.status !== 200) {
                             console.log('登录失败!');
                             this.$message({

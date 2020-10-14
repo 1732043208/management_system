@@ -93,7 +93,7 @@
             getHomeLeftFunc() {
                 getHomeLeft().then(res => {
                     this.homeLeft = res.data;
-                    console.log(this.homeLeft);
+                    // console.log(this.homeLeft);
                 }).catch(err => {
                     console.log(err);
                 })

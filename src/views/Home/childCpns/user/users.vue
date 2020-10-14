@@ -41,7 +41,7 @@
                 <el-table-column label="状态">
                     <template slot-scope="scope">
                         <el-switch
-                                v-model="scope.row.mg_state">
+                                v-model="scope.row.mg_state" @change="userStateChanged(scope.row)">
                         </el-switch>
                     </template>
                 </el-table-column>
@@ -84,7 +84,7 @@
 </template>
 
 <script>
-    import {getUsers} from "../../../../network/home";
+    import {getUsers, getUsersState} from "../../../../network/home";
 
     export default {
         name: "users",
@@ -115,6 +115,7 @@
                         console.log(err);
                     })
             },
+
             //监听pageSize改变事件
             handleSizeChange(newSize) {
                 // console.log(newSize);
@@ -126,6 +127,16 @@
                 // console.log(newPage);
                 this.queryInfo.pagenum = newPage;
                 this.getUsersFunc()
+            },
+            //监听switch开关状态的改变
+            userStateChanged(userInfo) {
+                console.log(userInfo);
+                getUsersState(userInfo.id, userInfo.mg_state).then(res => {
+                    console.log(res);
+                }).catch(err => {
+                    userInfo.mg_state=!userInfo.mg_state;
+                    console.log(err);
+                })
             }
         },
         created() {

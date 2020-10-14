@@ -12,8 +12,8 @@
             <!--            搜索与添加区域-->
             <el-row :gutter="20">
                 <el-col :span="7">
-                    <el-input placeholder="请输入内容">
-                        <el-button slot="append" icon="el-icon-search"></el-button>
+                    <el-input placeholder="请输入内容" v-model="queryInfo.query" clearable @clear="getUsersFunc">
+                        <el-button slot="append" icon="el-icon-search" @click="getUsersFunc"></el-button>
                     </el-input>
                 </el-col>
                 <el-col :span="4">
@@ -134,7 +134,7 @@
                 getUsersState(userInfo.id, userInfo.mg_state).then(res => {
                     console.log(res);
                 }).catch(err => {
-                    userInfo.mg_state=!userInfo.mg_state;
+                    userInfo.mg_state = !userInfo.mg_state;
                     console.log(err);
                 })
             }

@@ -66,3 +66,10 @@ export function getDeleteUsers(id) {
         method: 'delete'
     })
 }
+
+// 所有权限列表
+export function getAllPowerLists(type) {
+    return request({
+        url: "rights/" + type
+    })
+}

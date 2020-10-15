@@ -73,3 +73,42 @@ export function getAllPowerLists(type) {
         url: "rights/" + type
     })
 }
+
+// 角色列表
+export function getRolesList() {
+    return request({
+        url: "roles"
+    })
+}
+
+// 添加角色
+export function getAddRoles(roleName, roleDesc) {
+    return request({
+        url: "roles",
+        method: 'post',
+        data: {
+            roleName,
+            roleDesc
+        }
+    })
+}
+
+//根据 ID 查询用户信息
+export function getRolesID(id) {
+    return request({
+        url: "roles/" + id
+    })
+}
+
+// 编辑提交角色
+export function getChangeRoles(id, roleName, roleDesc) {
+    return request({
+            url: 'roles/' + id,
+            method: 'put',
+            data: {
+                roleName,
+                roleDesc
+            }
+        }
+    )
+}

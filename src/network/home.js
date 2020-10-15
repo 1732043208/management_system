@@ -59,3 +59,10 @@ export function getEditUsers(id, email, mobile) {
         }
     })
 }
+
+export function getDeleteUsers(id) {
+    return request({
+        url: "users/" + id,
+        method: 'delete'
+    })
+}

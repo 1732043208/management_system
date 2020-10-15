@@ -56,7 +56,8 @@
                         </el-tooltip><!--                        删除按钮-->
                         <el-tooltip effect="dark" content="删除用户" placement="top" :open-delay=500
                                     :enterable="false">
-                            <el-button type="danger" icon="el-icon-delete" size="mini"/>
+                            <el-button type="danger" icon="el-icon-delete" size="mini"
+                                       @click="deleteBtn(scope.row.id)"/>
                         </el-tooltip>
                         <!--                        分配角色按钮-->
                         <el-tooltip effect="dark" content="分配角色" placement="top" :open-delay=500 :enterable="false">
@@ -134,7 +135,14 @@
 </template>
 
 <script>
-    import {getUsers, getUsersState, getAddUsers, getSearchUsers, getEditUsers} from "../../../../network/home";
+    import {
+        getUsers,
+        getUsersState,
+        getAddUsers,
+        getSearchUsers,
+        getEditUsers,
+        getDeleteUsers
+    } from "../../../../network/home";
 
     export default {
         name: "users",
@@ -305,6 +313,36 @@
             // 监听修改用户对话框的关闭事件
             editDialogClosed() {
                 this.$refs.editFormRef.resetFields()
+            },
+            deleteBtn(id) {
+                console.log(id);
+                this.$confirm('此操作将永久删除该用户, 是否继续?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    getDeleteUsers(id).then(res => {
+
+                        console.log(res);
+                    }).catch(err => {
+                        console.log(err);
+                    });
+
+                    this.$message({
+                        type: 'success',
+                        message: '删除成功!'
+                    });
+
+                    // 刷新数据列表
+                    this.getUsersFunc();
+
+                }).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '已取消删除'
+                    });
+                });
+
             }
 
         },

@@ -49,11 +49,12 @@
                 <el-table-column label="操作" width="180">
                     <template slot-scope="scope">
                         <!--                        修改按钮-->
-                        <el-tooltip class="item" effect="dark" content="Top Center 提示文字" placement="top"
+                        <el-tooltip class="item" effect="dark" content="修改信息" placement="top"
                                     :open-delay=500 :enterable="false">
-                            <el-button type="primary" icon="el-icon-edit" size="mini"/>
+                            <el-button type="primary" icon="el-icon-edit" size="mini"
+                                       @click="showChangeDialog(scope.row.id)"/>
                         </el-tooltip><!--                        删除按钮-->
-                        <el-tooltip effect="dark" content="Top Center 提示文字" placement="top" :open-delay=500
+                        <el-tooltip effect="dark" content="删除用户" placement="top" :open-delay=500
                                     :enterable="false">
                             <el-button type="danger" icon="el-icon-delete" size="mini"/>
                         </el-tooltip>
@@ -61,7 +62,6 @@
                         <el-tooltip effect="dark" content="分配角色" placement="top" :open-delay=500 :enterable="false">
                             <el-button type="warning" icon="el-icon-setting" size="mini"/>
                         </el-tooltip>
-
 
                     </template>
                 </el-table-column>
@@ -107,11 +107,34 @@
   </span>
         </el-dialog>
 
+        <!--        修改用户对话框-->
+        <el-dialog
+                title="修改用户信息"
+                :visible.sync="changeDialogVisible"
+                width="30%"
+                @close="editDialogClosed">
+            <el-form :model="editForm" :rules="editFormRules" ref="editFormRef" label-width="70px">
+                <el-form-item label="用户名">
+                    <el-input :value="editForm.username" disabled></el-input>
+                </el-form-item>
+                <el-form-item label="邮箱" prop="email">
+                    <el-input v-model="editForm.email"></el-input>
+                </el-form-item>
+                <el-form-item label="手机" prop="mobile">
+                    <el-input v-model="editForm.mobile"></el-input>
+                </el-form-item>
+            </el-form>
+            <span slot="footer" class="dialog-footer">
+    <el-button @click="changeDialogVisible = false">取 消</el-button>
+    <el-button type="primary" @click="changeUsers">确 定</el-button>
+  </span>
+        </el-dialog>
+
     </div>
 </template>
 
 <script>
-    import {getUsers, getUsersState, getAddUsers} from "../../../../network/home";
+    import {getUsers, getUsersState, getAddUsers, getSearchUsers, getEditUsers} from "../../../../network/home";
 
     export default {
         name: "users",
@@ -176,7 +199,21 @@
                     mobile: [
                         {required: true, message: '请输入手机', trigger: 'blur'}, {validator: checkMobile, trigger: 'blur'}
                     ],
-                }
+                },
+                changeDialogVisible: false,
+                // 查询到的用户信息对象
+                editForm: {},
+                //添加表单的验证规则对象
+                editFormRules: {
+                    email: [
+                        {required: true, message: '请输入邮箱', trigger: 'blur'},
+                        {validator: checkEmail, trigger: 'blur'}
+                    ],
+                    mobile: [
+                        {required: true, message: '请输入手机', trigger: 'blur'},
+                        {validator: checkMobile, trigger: 'blur'}
+                    ],
+                },
             }
         },
         methods: {
@@ -225,7 +262,7 @@
 
                     getAddUsers(this.addForm.username, this.addForm.password, this.addForm.email, this.addForm.mobile,)
                         .then(res => {
-                            console.log(res);
+                            // console.log(res);
                         }).catch(err => {
                         console.log(err);
                     });
@@ -234,8 +271,42 @@
                     //重新获取用户列表数据
                     this.getUsersFunc();
                     console.log(val);
+                    this.$message.success('添加用户成功！')
                 })
+            },
+            showChangeDialog(id) {
+                this.changeDialogVisible = true;
+                getSearchUsers(id).then(res => {
+
+                    this.editForm = res.data;
+                    // console.log(this.editForm);
+                }).catch(err => {
+                    console.log(err);
+                })
+
+            },
+            // 点击按钮，修改用户信息
+            changeUsers() {
+                this.$refs.editFormRef.validate(val => {
+                    if (!val) return;
+                    getEditUsers(this.editForm.id, this.editForm.email, this.editForm.mobile).then(res => {
+                        console.log(res);
+                    }).catch(err => {
+                        console.log(err);
+                    });
+                    // 关闭对话框
+                    this.changeDialogVisible = false;
+                    // 刷新数据列表
+                    this.getUsersFunc();
+
+                    this.$message.success('更新用户信息成功！')
+                })
+            },
+            // 监听修改用户对话框的关闭事件
+            editDialogClosed() {
+                this.$refs.editFormRef.resetFields()
             }
+
         },
         created() {
             this.getUsersFunc()

@@ -8,6 +8,7 @@ const Welcome = () => import('../components/Welcome.vue');
 const Users = () => import('../views/Home/childCpns/user/users');
 const Rights = () => import('../views/Home/childCpns/power/Rights');
 const Roles = () => import('../views/Home/childCpns/power/Roles');
+const Cate = () => import('../views/Home/childCpns/goods/Cate');
 Vue.use(VueRouter);
 
 const routes = [
@@ -24,7 +25,8 @@ const routes = [
         children: [{path: '/welcome', component: Welcome},
             {path: '/users', component: Users},
             {path: '/rights', component: Rights},
-            {path: '/roles', component: Roles}]
+            {path: '/roles', component: Roles},
+            {path: '/categories', component: Cate}]
     },
     {
         path: '/login',

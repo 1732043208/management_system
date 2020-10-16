@@ -79,7 +79,8 @@
                     </el-tooltip>
                     <!--                        分配角色按钮-->
                     <el-tooltip effect="dark" content="分配角色" placement="top" :open-delay=500 :enterable="false">
-                        <el-button type="warning" icon="el-icon-setting" size="mini" @click="showSetRightDialog">分配权限
+                        <el-button type="warning" icon="el-icon-setting" size="mini"
+                                   @click="showSetRightDialog(scope.row)">分配权限
                         </el-button>
                     </el-tooltip>
 
@@ -134,9 +135,13 @@
         <el-dialog
                 title="分配权限"
                 :visible.sync="setRightDialogVisible"
-                width="50%">
+                width="50%" @close="setRightDialogClosed">
             <!--            树形控件-->
-            <el-tree :data="rightList" :props="treeProps" show-checkbox node-key="id" default-expand-all></el-tree>
+            <el-tree :data="rightList"
+                     :props="treeProps"
+                     show-checkbox node-key="id"
+                     default-expand-all
+                     :default-checked-keys="defkeys"></el-tree>
 
             <span slot="footer" class="dialog-footer">
     <el-button @click="setRightDialogVisible = false">取 消</el-button>
@@ -188,10 +193,12 @@
                 // 所有权限的数据
                 rightList: [],
                 // 树形控件的属性绑定对象
-                treeProps:{
-                    label:'authName',
-                    children:'children'
-                }
+                treeProps: {
+                    label: 'authName',
+                    children: 'children'
+                },
+                // 默认选中的节点ID值数组
+                defkeys: []
             }
         },
         methods: {
@@ -309,14 +316,29 @@
 
             },
             //展示分配权限的对话框
-            showSetRightDialog() {
+            showSetRightDialog(role) {
                 getAllPowerList('tree').then(res => {
-                    this.rightList = res.data
+                    this.rightList = res.data;
                     console.log(this.rightList);
                 }).catch(err => {
                     console.log(err);
                 });
+                // 递归获取三级节点的ID
+                this.getLeafKeys(role, this.defkeys);
                 this.setRightDialogVisible = true
+            },
+            // 通过递归的形式，获取角色下所有三级权限的id，并保存到defkeys中
+            getLeafKeys(node, arr) {
+                if (!node.children) {
+                    return arr.push(node.id)
+                } else {
+                    node.children.forEach(item => {
+                        this.getLeafKeys(item, arr)
+                    })
+                }
+            },
+            setRightDialogClosed() {
+                this.defkeys = []
             }
         },
         created() {

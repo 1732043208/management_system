@@ -120,3 +120,10 @@ export function getDeleteRoles(id) {
         method: 'delete'
     })
 }
+
+export function getDeleteRolesPower(roleId, rightId) {
+    return request({
+        url: "roles/" + roleId + "/rights/" + rightId,
+        method: 'delete'
+    })
+}

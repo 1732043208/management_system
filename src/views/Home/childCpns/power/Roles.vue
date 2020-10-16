@@ -22,29 +22,40 @@
                 <template slot-scope="scope">
                     <el-row v-for="(item1,index1) in scope.row.children"
                             :key="item1.id"
-                            :class="['bdbottom',index1===0 ? 'bdtop' : '']">
+                            :class="['bdbottom',index1===0 ? 'bdtop' : '','vcenter']">
 
                         <!--                        渲染一级权限-->
                         <el-col :span="5">
-                            <el-tag>{{item1.authName}}</el-tag>
+                            <el-tag closable
+                                    @close="removeRightById(scope.row,item1.id)">{{item1.authName}}
+                            </el-tag>
                             <i class="el-icon-caret-right"></i>
                         </el-col>
                         <!--                        渲染二级和三级权限-->
                         <el-col :span="19">
                             <!--                            通过for循环嵌套渲染二级权限-->
                             <el-row v-for="(item2,index2) in item1.children" :key="item2.id"
-                                    :class="[index2===0?'':'bdtop']">
-                                <el-col>
-                                    <el-tag type="success">{{item2.authName}}</el-tag>
+                                    :class="[index2===0?'':'bdtop','vcenter']">
+                                <el-col :span="6">
+                                    <el-tag type="success" closable
+                                            @close="removeRightById(scope.row,item2.id)">{{item2.authName}}
+                                    </el-tag>
                                     <i class="el-icon-caret-right"></i>
                                 </el-col>
-                                <el-col></el-col>
+                                <el-col :span="18">
+                                    <el-tag type="warning"
+                                            v-for="(item3,index3) in item2.children"
+                                            :key="item3.id"
+                                            closable
+                                            @close="removeRightById(scope.row,item3.id)">
+                                        {{item3.authName}}
+                                    </el-tag>
+                                </el-col>
                             </el-row>
                         </el-col>
                     </el-row>
-                    <pre>
-                     {{scope.row}}
-                </pre>
+
+
                 </template>
             </el-table-column>
             <!--            索引列-->
@@ -128,7 +139,8 @@
         getRolesID,
         getChangeRoles,
         getDeleteRoles,
-        getDeleteUsers
+        getDeleteUsers,
+        getDeleteRolesPower
     } from "../../../../network/home";
 
     export default {
@@ -212,7 +224,6 @@
                 this.getRolesListFunc()
             },
             deleteBtn(id) {
-
                 this.$confirm('此操作将永久删除该用户, 是否继续?', '提示', {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
@@ -241,6 +252,36 @@
 
                 // 刷新数据列表
                 this.getRolesListFunc()
+            },
+            // 弹框提示用户是否要删除
+            removeRightById(Roles, PowerId) {
+                console.log(Roles);
+
+                this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    getDeleteRolesPower(Roles.id, PowerId).then(res => {
+                        console.log(res);
+                        //刷新权限列表(将后台的返回值赋值给)Roles显示
+                        Roles.children = res.data
+                    }).catch(err => {
+                        console.log(err);
+                    });
+                    this.$message({
+                        type: 'success',
+                        message: '删除成功!'
+                    });
+
+                    // 刷新数据列表
+
+                }).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '已取消删除'
+                    });
+                });
 
             }
         },
@@ -262,5 +303,10 @@
 
     .bdbottom {
         border-bottom: 1px solid #eee;
+    }
+
+    .vcenter {
+        display: flex;
+        align-items: center;
     }
 </style>

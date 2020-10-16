@@ -61,7 +61,7 @@
                         </el-tooltip>
                         <!--                        分配角色按钮-->
                         <el-tooltip effect="dark" content="分配角色" placement="top" :open-delay=500 :enterable="false">
-                            <el-button type="warning" icon="el-icon-setting" size="mini"/>
+                            <el-button type="warning" icon="el-icon-setting" size="mini" @click="setRole(scope.row)"/>
                         </el-tooltip>
 
                     </template>
@@ -131,6 +131,30 @@
   </span>
         </el-dialog>
 
+        <!--        分配角色的对话框-->
+        <el-dialog
+                title="分配角色"
+                :visible.sync="setRoleDialogVisible"
+                width="30%" @close="setRoleDialogClosed">
+            <div>
+                <p>当前的用户:{{userInfo.username}}</p>
+                <p>当前的角色：{{userInfo.role_name}}</p>
+                <p>分配新角色:
+                    <el-select v-model="selectedRoleId" placeholder="请选择">
+                        <el-option
+                                v-for="item in rolesList"
+                                :key="item.id"
+                                :label="item.roleName"
+                                :value="item.id">
+                        </el-option>
+                    </el-select>
+                </p>
+            </div>
+            <span slot="footer" class="dialog-footer">
+    <el-button @click="setRoleDialogVisible = false">取 消</el-button>
+    <el-button type="primary" @click="saveRoleInfo">确 定</el-button>
+  </span>
+        </el-dialog>
     </div>
 </template>
 
@@ -141,7 +165,9 @@
         getAddUsers,
         getSearchUsers,
         getEditUsers,
-        getDeleteUsers
+        getDeleteUsers,
+        getRolesList,
+        getUsersRoles
     } from "../../../../network/home";
 
     export default {
@@ -222,15 +248,25 @@
                         {validator: checkMobile, trigger: 'blur'}
                     ],
                 },
+                //控制分配角色对话框的显示与隐藏
+                setRoleDialogVisible: false,
+                // 需要被分配角色的用户信息
+                userInfo: {},
+                // 所有角色的数据列表
+                rolesList: [],
+                // 已选中的角色ID值
+                selectedRoleId: ''
             }
+
         },
         methods: {
             getUsersFunc() {
                 getUsers(this.queryInfo.query, this.queryInfo.pagenum, this.queryInfo.pagesize,)
                     .then(res => {
-                        console.log(res);
+
                         this.usersList = res.data.users;
                         this.total = res.data.total;
+                        console.log(this.usersList);
                     })
                     .catch(err => {
                         console.log(err);
@@ -343,6 +379,39 @@
                     });
                 });
 
+            },
+            // 展示分配角色的对话框
+            setRole(userInfo) {
+                this.userInfo = userInfo;
+                // 在展示对话框之前，获取所有角色的列表
+                getRolesList().then(res => {
+                    this.rolesList = res.data;
+                    console.log(res);
+                }).catch(err => {
+                    console.log(err);
+                });
+                this.setRoleDialogVisible = true
+            },
+            saveRoleInfo() {
+                if (!this.selectedRoleId) {
+                    return this.$message.error('请选择要分配的角色！')
+                } else {
+                    getUsersRoles(this.userInfo.id, this.selectedRoleId)
+                        .then(res => {
+                            console.log(this.userInfo.id);
+                            console.log(this.selectedRoleId);
+                            this.$message.success('更新角色成功');
+                            console.log(res);
+                            this.getUsersFunc();
+                            this.setRoleDialogVisible = false;
+
+                        }).catch(err => {
+                        this.$message.error('更新角色失败！')
+                    });
+                }
+            }, setRoleDialogClosed() {
+                this.selectedRoleId = '';
+                this.userInfo = []
             }
 
         },
@@ -353,7 +422,5 @@
 </script>
 
 <style scoped>
-.asda{
 
-}
 </style>

@@ -136,12 +136,23 @@ export function getAllPowerList(type) {
 }
 
 // 角色授权
-export function getRolesPower(roleId,rids) {
+export function getRolesPower(roleId, rids) {
     return request({
         url: 'roles/' + roleId + '/rights',
-        method:'post',
-        data:{
+        method: 'post',
+        data: {
             rids
+        }
+    })
+}
+
+// 分配用户角色
+export function getUsersRoles(id,rid) {
+    return request({
+        url: 'users/' + id + '/role',
+        method: 'put',
+        data:{
+            rid
         }
     })
 }

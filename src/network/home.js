@@ -134,3 +134,14 @@ export function getAllPowerList(type) {
         url: 'rights/' + type
     })
 }
+
+// 角色授权
+export function getRolesPower(roleId,rids) {
+    return request({
+        url: 'roles/' + roleId + '/rights',
+        method:'post',
+        data:{
+            rids
+        }
+    })
+}

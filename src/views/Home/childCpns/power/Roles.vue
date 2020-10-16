@@ -139,13 +139,14 @@
             <!--            树形控件-->
             <el-tree :data="rightList"
                      :props="treeProps"
+                     ref="treeRef"
                      show-checkbox node-key="id"
                      default-expand-all
                      :default-checked-keys="defkeys"></el-tree>
 
             <span slot="footer" class="dialog-footer">
     <el-button @click="setRightDialogVisible = false">取 消</el-button>
-    <el-button type="primary" @click="setRightDialogVisible = false">确 定</el-button>
+    <el-button type="primary" @click="setRight()">确 定</el-button>
   </span>
         </el-dialog>
     </div>
@@ -160,7 +161,8 @@
         getDeleteRoles,
         getDeleteUsers,
         getDeleteRolesPower,
-        getAllPowerList
+        getAllPowerList,
+        getRolesPower
     } from "../../../../network/home";
 
     export default {
@@ -198,7 +200,8 @@
                     children: 'children'
                 },
                 // 默认选中的节点ID值数组
-                defkeys: []
+                defkeys: [],
+                roleID: ''
             }
         },
         methods: {
@@ -306,7 +309,7 @@
                     });
 
                     // 刷新数据列表
-
+                    this.getRolesListFunc()
                 }).catch(() => {
                     this.$message({
                         type: 'info',
@@ -317,6 +320,7 @@
             },
             //展示分配权限的对话框
             showSetRightDialog(role) {
+                this.roleID = role.id;
                 getAllPowerList('tree').then(res => {
                     this.rightList = res.data;
                     console.log(this.rightList);
@@ -339,6 +343,27 @@
             },
             setRightDialogClosed() {
                 this.defkeys = []
+            },
+            setRight() {
+                const keys = [
+                    ...this.$refs.treeRef.getCheckedKeys(),
+                    ...this.$refs.treeRef.getHalfCheckedKeys()
+                ];
+                const idStr = keys.join(',');
+
+                getRolesPower(this.roleID, idStr).then(res => {
+                    // console.log(res);
+                    this.$message({
+                        type: 'success',
+                        message: '角色分配授权成功!'
+                    });
+                }).catch(err => {
+                    console.log(err);
+                });
+
+                // 更新页面数据
+                this.getRolesListFunc()  ;
+                this.setRightDialogVisible = false
             }
         },
         created() {

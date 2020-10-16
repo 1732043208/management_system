@@ -127,3 +127,10 @@ export function getDeleteRolesPower(roleId, rightId) {
         method: 'delete'
     })
 }
+
+// 所有权限列表
+export function getAllPowerList(type) {
+    return request({
+        url: 'rights/' + type
+    })
+}

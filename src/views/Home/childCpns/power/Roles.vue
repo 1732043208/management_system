@@ -79,7 +79,8 @@
                     </el-tooltip>
                     <!--                        分配角色按钮-->
                     <el-tooltip effect="dark" content="分配角色" placement="top" :open-delay=500 :enterable="false">
-                        <el-button type="warning" icon="el-icon-setting" size="mini">分配权限</el-button>
+                        <el-button type="warning" icon="el-icon-setting" size="mini" @click="showSetRightDialog">分配权限
+                        </el-button>
                     </el-tooltip>
 
                 </template>
@@ -129,6 +130,19 @@
   </span>
         </el-dialog>
 
+        <!--        分配权限对话框-->
+        <el-dialog
+                title="分配权限"
+                :visible.sync="setRightDialogVisible"
+                width="50%">
+            <!--            树形控件-->
+            <el-tree :data="rightList" :props="treeProps" show-checkbox node-key="id" default-expand-all></el-tree>
+
+            <span slot="footer" class="dialog-footer">
+    <el-button @click="setRightDialogVisible = false">取 消</el-button>
+    <el-button type="primary" @click="setRightDialogVisible = false">确 定</el-button>
+  </span>
+        </el-dialog>
     </div>
 </template>
 
@@ -140,7 +154,8 @@
         getChangeRoles,
         getDeleteRoles,
         getDeleteUsers,
-        getDeleteRolesPower
+        getDeleteRolesPower,
+        getAllPowerList
     } from "../../../../network/home";
 
     export default {
@@ -168,6 +183,15 @@
                         {max: 15, message: '角色描述不得超过15个字符', trigger: 'blur'}
                     ],
                 },
+                // 控制分配权限对话框的显示与隐藏
+                setRightDialogVisible: false,
+                // 所有权限的数据
+                rightList: [],
+                // 树形控件的属性绑定对象
+                treeProps:{
+                    label:'authName',
+                    children:'children'
+                }
             }
         },
         methods: {
@@ -283,6 +307,16 @@
                     });
                 });
 
+            },
+            //展示分配权限的对话框
+            showSetRightDialog() {
+                getAllPowerList('tree').then(res => {
+                    this.rightList = res.data
+                    console.log(this.rightList);
+                }).catch(err => {
+                    console.log(err);
+                });
+                this.setRightDialogVisible = true
             }
         },
         created() {

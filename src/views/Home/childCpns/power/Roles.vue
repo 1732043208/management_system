@@ -76,12 +76,12 @@
                 :visible.sync="changeDialogVisible"
                 width="30%"
                 @close="editDialogClosed">
-            <el-form :model="editForm" :rules="editFormRules" ref="editFormRef" label-width="70px">
+            <el-form :model="editForm" :rules="editFormRules" ref="editFormRef" label-width="80px">
                 <el-form-item label="用户名">
-                    <el-input :value="this.editForm.roleName" disabled></el-input>
+                    <el-input v-model="editForm.roleName"></el-input>
                 </el-form-item>
-                <el-form-item label="邮箱" prop="email">
-                    <el-input v-model="this.editForm.roleDesc"></el-input>
+                <el-form-item label="角色描述" prop="roleDesc">
+                    <el-input v-model="editForm.roleDesc"></el-input>
                 </el-form-item>
             </el-form>
             <span slot="footer" class="dialog-footer">
@@ -94,12 +94,18 @@
 </template>
 
 <script>
-    import {getRolesList, getAddRoles, getRolesID, getChangeRoles} from "../../../../network/home";
+    import {
+        getRolesList,
+        getAddRoles,
+        getRolesID,
+        getChangeRoles,
+        getDeleteRoles,
+        getDeleteUsers
+    } from "../../../../network/home";
 
     export default {
         name: "Roles",
         data() {
-
             return {
                 roleslist: [],
                 addDialogVisible: false,
@@ -128,7 +134,7 @@
             getRolesListFunc() {
                 getRolesList().then(res => {
                     this.roleslist = res.data;
-                    console.log(res);
+                    // console.log(res);
                 }).catch(err => {
                         console.log(err);
                     }
@@ -155,6 +161,7 @@
                 this.$refs.addRolesFormRef.resetFields()
             },
             showChangeDialog(id) {
+                // console.log(id);
                 this.changeDialogVisible = true;
                 getRolesID(id).then(res => {
                     this.editForm = res.data;
@@ -166,17 +173,52 @@
             editDialogClosed() {
                 this.$refs.editFormRef.resetFields()
             },
-            // 重大问题！~！！！！！！！！！！！！！！！！！！！！！！！！！！！
             changeUsers() {
-                getChangeRoles(this.editForm.roleName, this.editForm.roleDesc).then(res => {
-                    console.log(res);
+                getChangeRoles(this.editForm.roleId, this.editForm.roleName, this.editForm.roleDesc).then(res => {
+                    // console.log(res);
+
                 }).catch(err => {
                     console.log(err);
-                })
+                });
+                this.changeDialogVisible = false;
+                this.getRolesListFunc()
+            },
+            deleteBtn(id) {
+
+                this.$confirm('此操作将永久删除该用户, 是否继续?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    getDeleteRoles(id).then(res => {
+                        console.log(res);
+                    }).catch(err => {
+                        console.log(err);
+                    });
+
+                    // 刷新数据列表
+                    this.getRolesListFunc();
+                    this.$message({
+                        type: 'success',
+                        message: '删除成功!'
+                    });
+
+
+                }).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '已取消删除'
+                    });
+                });
+
+                // 刷新数据列表
+                this.getRolesListFunc()
+
             }
         },
         created() {
             this.getRolesListFunc()
+
         }
     }
 </script>

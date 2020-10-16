@@ -112,3 +112,11 @@ export function getChangeRoles(id, roleName, roleDesc) {
         }
     )
 }
+
+// 删除角色
+export function getDeleteRoles(id) {
+    return request({
+        url: "roles/" + id,
+        method: 'delete'
+    })
+}

@@ -9,6 +9,10 @@ const Users = () => import('../views/Home/childCpns/user/users');
 const Rights = () => import('../views/Home/childCpns/power/Rights');
 const Roles = () => import('../views/Home/childCpns/power/Roles');
 const Cate = () => import('../views/Home/childCpns/goods/Cate');
+const Parameter = () => import('../views/Home/childCpns/goods/parameter');
+const List = () => import('../views/Home/childCpns/goods/List');
+const Statistics = () => import('../views/Home/childCpns/statistics/Statistics')
+const Orders = () => import('../views/Home/childCpns/orders/orders')
 Vue.use(VueRouter);
 
 const routes = [
@@ -26,7 +30,11 @@ const routes = [
             {path: '/users', component: Users},
             {path: '/rights', component: Rights},
             {path: '/roles', component: Roles},
-            {path: '/categories', component: Cate}]
+            {path: '/categories', component: Cate},
+            {path: '/params', component: Parameter},
+            {path: '/goods', component: List},
+            {path: '/orders', component: Orders},
+            {path:'/reports',component:Statistics}]
     },
     {
         path: '/login',

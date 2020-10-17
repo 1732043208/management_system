@@ -147,12 +147,24 @@ export function getRolesPower(roleId, rids) {
 }
 
 // 分配用户角色
-export function getUsersRoles(id,rid) {
+export function getUsersRoles(id, rid) {
     return request({
         url: 'users/' + id + '/role',
         method: 'put',
-        data:{
+        data: {
             rid
+        }
+    })
+}
+
+// 商品分类数据列表
+export function getCategoriesList(type, pagenum, pagesize) {
+    return request({
+        url: 'categories',
+        params: {
+            type,
+            pagenum,
+            pagesize
         }
     })
 }

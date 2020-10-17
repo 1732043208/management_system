@@ -1,6 +1,6 @@
 <template>
-    <div>
-        welcome
+    <div class="title">
+        欢迎来到Joker商城后台管理系统！
     </div>
 </template>
 
@@ -11,5 +11,7 @@
 </script>
 
 <style scoped>
-
+.title{
+    font-size: 30px;
+}
 </style>
